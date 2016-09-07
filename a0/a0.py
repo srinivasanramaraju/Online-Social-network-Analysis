@@ -37,10 +37,10 @@ import sys
 import time
 from TwitterAPI import TwitterAPI
 
-consumer_key = 'fixme'
-consumer_secret = 'fixme'
-access_token = 'fixme'
-access_token_secret = 'fixme'
+consumer_key = 'JbNmHiCvktwSRFeWwvYbEgBIu'
+consumer_secret = '6WpENU31DWOZuKgZ61jmRguRezynhQubKMDhYVLeWXliiwksNS'
+access_token = '1376939035-dC2nd33K47GiCw3y8KtHZWAATrM2qgnS6fmUTEW'
+access_token_secret = 'xCW918qTRl2vnWxaecQbSdVeuPho1MoD9xsJqU1EBb6ai'
 
 
 # This method is done for you. Make sure to put your credentials in the file twitter.cfg.
@@ -67,6 +67,10 @@ def read_screen_names(filename):
     ['DrJillStein', 'GovGaryJohnson', 'HillaryClinton', 'realDonaldTrump']
     """
     ###TODO
+    with open(filename,'r') as scrnamesfile:
+        scrnames=scrnamesfile.read().splitlines()
+        #print(scrnames)
+        return scrnames
     pass
 
 
@@ -113,7 +117,13 @@ def get_users(twitter, screen_names):
     [6253282, 783214]
     """
     ###TODO
-    pass
+    #print(screen_names)
+    usrresults=robust_request(twitter,"users/lookup",{"screen_name":screen_names})
+    #print(usrresults.text)
+    #print([u['id'] for u in usrresults])
+    #for usr in usrresults:
+        
+    return usrresults
 
 
 def get_friends(twitter, screen_name):
@@ -137,7 +147,13 @@ def get_friends(twitter, screen_name):
     >>> get_friends(twitter, 'aronwc')[:5]
     [695023, 1697081, 8381682, 10204352, 11669522]
     """
-    ###TODO
+    ###TODO  sort it 
+    frndslistjsonresults = robust_request(twitter,"friends/ids",{"screen_name":screen_name,"Count":5000})    
+    #print(frndslistjson)    
+    frndslistjson=frndslistjsonresults.json()
+    frndslist=frndslistjson['ids']
+    #print(frndslist)
+    return sorted(frndslist,key=int)
     pass
 
 
@@ -160,6 +176,19 @@ def add_all_friends(twitter, users):
     [695023, 1697081, 8381682, 10204352, 11669522]
     """
     ###TODO
+    usrdic={}
+    for user in users:
+        usrdic['screen_name'] = user['screen_name']
+        #print(usrdic['screen_name'])
+        usrfrndresults = get_friends(twitter,usrdic['screen_name'])
+        #print(usrfrndresults.text)
+        #print(usrfrndresults)
+        #usrdic['friends'] =  usrfrnds["ids"]
+        user['friends'] = usrfrndresults
+        
+    #print(users)        
+ 
+    #return 0
     pass
 
 
@@ -172,6 +201,8 @@ def print_num_friends(users):
         Nothing
     """
     ###TODO
+    for user in users:
+        print(user['screen_name'], len(user['friends']))
     pass
 
 
@@ -188,6 +219,12 @@ def count_friends(users):
     >>> c.most_common()
     [(2, 3), (3, 2), (1, 1)]
     """
+    cnt=Counter()
+    for user in users:
+        for key in user['friends']:
+            cnt[key]+=1
+    #print(cnt)
+    return cnt    
     ###TODO
     pass
 
@@ -214,6 +251,24 @@ def friend_overlap(users):
     [('a', 'c', 3), ('a', 'b', 2), ('b', 'c', 2)]
     """
     ###TODO
+    alist=[]
+    blist=[]
+    commontuplelist=[]  
+    for i,a in enumerate(users):
+        #print(a['screen_name'])
+        for j in range(i+1,len(users)):
+            #print(a['screen_name'],users[j]['screen_name'])
+            alist=a['friends']
+            blist=users[j]['friends']
+            aname=a['screen_name']
+            bname=users[j]['screen_name']
+            commonfrndsid=set(alist).intersection(blist)
+            commonfrndscount=len(commonfrndsid)
+            commontuple=aname,bname,commonfrndscount
+            commontuplelist.append(commontuple)
+    sortedlist=sorted(commontuplelist,key =lambda x:(-x[2],x[0],x[1])) 
+    return sortedlist     
+    
     pass
 
 
@@ -232,6 +287,30 @@ def followed_by_hillary_and_donald(users, twitter):
         that is followed by both Hillary Clinton and Donald Trump.
     """
     ###TODO
+    hillarylist=[]
+    trumplist=[]
+    usrnamedic={}
+    for user in users:
+        usrnamedic['screen_name']=user['screen_name']
+        #print(usrnamedic['screen_name'])
+        if usrnamedic['screen_name'] == "HillaryClinton":
+            #print("loading hillary")
+            hillarylist= user['friends']
+        if usrnamedic['screen_name'] == "realDonaldTrump":
+            #print("loading trump")
+            trumplist= user['friends']
+     
+    #print(hillarylist)
+    #print(trumplist)       
+    commonid =set(hillarylist).intersection(trumplist) 
+    #print(commonid)
+    commonuserresults=robust_request(twitter,"users/lookup",{"user_id":commonid})
+    userresults= commonuserresults.json()
+    #print(res)
+    #print(commonuserresults.text)
+    for res in userresults:
+        commonuser=res["screen_name"]
+        return commonuser
     pass
 
 
@@ -251,6 +330,14 @@ def create_graph(users, friend_counts):
       A networkx Graph
     """
     ###TODO
+    graph = nx.Graph()
+    for user in users:
+        graph.add_node(user['screen_name'])
+        for each in user['friends']:
+            if friend_counts[each] > 1:
+                graph.add_node(each)
+                graph.add_edge(user['screen_name'],each)
+    return graph
     pass
 
 
@@ -265,6 +352,13 @@ def draw_network(graph, users, filename):
     make it look presentable.
     """
     ###TODO
+    plt.figure(figsize=(12,12))
+    labels={nodes: '' if isinstance(nodes,int) else nodes for nodes in graph.nodes()}
+    nx.draw_networkx(graph,labels=labels, alpha=.5, width=.1,
+                     node_size=100)
+    plt.axis("off")
+    #plt.show()
+    plt.savefig(filename)
     pass
 
 
