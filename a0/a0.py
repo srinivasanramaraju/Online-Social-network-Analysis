@@ -43,7 +43,7 @@ access_token = '1376939035-dC2nd33K47GiCw3y8KtHZWAATrM2qgnS6fmUTEW'
 access_token_secret = 'xCW918qTRl2vnWxaecQbSdVeuPho1MoD9xsJqU1EBb6ai'
 
 
-# This method is done for you. Make sure to put your credentials in the file twitter.cfg.
+# This method is done for you.
 def get_twitter():
     """ Construct an instance of TwitterAPI using the tokens you entered above.
     Returns:
