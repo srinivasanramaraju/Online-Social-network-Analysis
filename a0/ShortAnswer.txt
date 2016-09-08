@@ -9,6 +9,17 @@ Trump.
 
 How is this approach misleading? How might you fix it?
 
+Jill Stien and Gary Johnson follow numerous accounts(Jill Stien- 4159, 
+Gary Johnson - 3123). Out of that, they overlap only in 344 accounts.
+Gary follows 2779 accounts different than Jill and Jill follows 3811 accounts
+differnet than Gary. 
+
+The friend overlap doesnt necessarily mean that they are similar, the users can have different interests and different opinions
+So, this cannot be taken as a parameter for similarity. And, moreover the difference between them is huge and common accounts is meagre.
+
+If we could find the common accounts followed on various categories like sports teams, celebrities followed , tweets and retweets on certain issues and polls.
+Also, if they have lesser different accounts and more common accounts between them on different categories. Based on this we could tell thier similarity but not just with common accounts. 
+  
 
 
 
@@ -23,12 +34,15 @@ do you think this user is followed by both Hilary Clinton and Donald Trump,
 who are rivals? Do some web searches to see if you can find out more
 information.
 
+Magic Johnson is an american retired professional basketball player.
+The possible reason for both to follow could be:
 
-
-
-
-
-
+He is NBA legend, entreprenuer and Philanthropist.
+He endorses Hillary for her 2016 Presidential Campaign.
+He was long rumored to replace Trump as new face in Celebrity Apprentice 
+television franchise. 
+He is a businessman who has also expressed interest in doing business with Trump and likes Trump Hotels
+These are the possible reasons for the rivals to follow Magic Johnson 
 
 
 
@@ -39,7 +53,11 @@ information.
 Johnson follows over 3K accounts, while Donald Trump follows less than
 50). Why do you think this is? How might that affect our analysis?
 
-
+It depends on the candidate to follow  or not. It could be personal choice to avoid or it could be because of not showing interest towards people.
+As this assignment is about political social network, when a candidate follows very less accounts.
+It is difficult to know who the candidate likes to follow and what is his/her interests is in. And,How many friends are common between the candidates and thier social connection is difficult to know.
+This makes it difficult to know about the commonality and difference between candidates in every domain.  
+ 
 
 
 
@@ -55,3 +73,12 @@ https://dev.twitter.com/rest/reference/get/friends/ids, how many requests will
 we have to make? Given how Twitter does rate limiting
 (https://dev.twitter.com/rest/public/rate-limiting), approximately how many
 minutes will it take to collect this data?
+
+A max of 15 request per Rate limit 15 min window is allowed for GET friends/ids and max of 1 user id can be processed in a single request.
+Having a total of 8073 friends + 4 candidates  - 8077 friend list has to be retrieved, it should takes us 8077 requests to get/friends/ids
+of each friends. It will take us 539 15-Min Window. 
+
+Approximately, it should take us 8085 mins for us to collect the data.
+
+
+
