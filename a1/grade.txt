@@ -1,0 +1,25 @@
+Grade: 48.00/50.00
+
+1 Deduction(s):
+
+--------------
+#1: 2.00 points
+Failing test: test_approx_right: 
+        @points=2
+        
+Traceback (most recent call last):
+  File "../assignments-sol/a1/a1_test.py", line 185, in test_approx_right
+    self.assertEqual('no', is_approximation_always_right().lower())
+AssertionError: 'no' != 'yes'
+- no
++ yes
+
+
+source:
+    def test_approx_right(self):
+         """
+         @points=2
+         """
+         self.assertEqual('no', is_approximation_always_right().lower())
+--------------
+
