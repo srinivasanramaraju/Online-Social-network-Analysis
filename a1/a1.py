@@ -511,7 +511,6 @@ def path_score(graph, root, k, beta):
       root.....a node in the graph (a string) to recommend links for.
       k........the number of links to recommend.
       beta.....the beta parameter in the equation above.
-      m........the m parameter in the equation above.
 
     Returns:
       A list of tuples in descending order of score. Ties are broken by
