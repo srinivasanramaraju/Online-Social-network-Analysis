@@ -52,6 +52,13 @@ def tokenize(movies):
     [['horror', 'romance'], ['sci-fi']]
     """
     ###TODO
+    tokenslist=[]
+    for index,eachgenre in movies.iterrows():
+        tokenslist+=[tokenize_string(eachgenre['genres'])]
+    movies['tokens']=tokenslist
+    
+    return movies
+    
     pass
 
 
@@ -78,6 +85,53 @@ def featurize(movies):
       - The vocab, a dict from term to int. Make sure the vocab is sorted alphabetically as in a2 (e.g., {'aardvark': 0, 'boy': 1, ...})
     """
     ###TODO
+    allgenres=[]
+    genredata=[]
+    
+    csr_matrixlist=[]
+    docgenrecount=defaultdict(lambda:0)
+    vocab={}
+    i=0
+    row=0
+     
+    for genreslist in movies['tokens'].tolist():
+        genrecount=defaultdict(lambda:0)
+        onedoc=defaultdict(lambda:1)
+        for eachgenre in genreslist:
+            genrecount[eachgenre]+=1
+            if eachgenre not in docgenrecount or onedoc[eachgenre] == 1:
+                docgenrecount[eachgenre]+=1
+                onedoc[eachgenre] = 0
+            if eachgenre not in allgenres:
+                allgenres.append(eachgenre)
+            maxkey=max(genrecount, key=genrecount.get) 
+            tempdata=[]
+        for genre,count in genrecount.items():
+            tempdata+=[(genre,count,genrecount[maxkey])]
+        genredata+=[tempdata]    
+            
+    allgenres=sorted(allgenres)
+    for eachgenre in allgenres:
+        if eachgenre not in vocab:
+            vocab[eachgenre]=i
+            i=i+1 
+    
+    for genretuplelist in genredata:
+        matrixdata=[]
+        matrixrow=[]
+        matrixcol=[]
+        for genretuple in genretuplelist:
+            matrixdata.append((genretuple[1]/genretuple[2]) * math.log((len(movies['tokens'].tolist())/docgenrecount[genretuple[0]]),10))
+            matrixrow.append(0)
+            matrixcol.append(vocab[genretuple[0]])
+        csrdata=np.array(matrixdata)
+        csrrow=np.array(matrixrow) 
+        csrcol=np.array(matrixcol)
+        X=csr_matrix((csrdata, (csrrow, csrcol)),shape=(1,len(vocab))) 
+        csr_matrixlist+=X
+    movies['features']=pd.DataFrame(csr_matrixlist)  
+    
+    return movies,vocab       
     pass
 
 
@@ -102,6 +156,13 @@ def cosine_sim(a, b):
       The cosine similarity, defined as: dot(a, b) / ||a|| * ||b||
       where ||a|| indicates the Euclidean norm (aka L2 norm) of vector a.
     """
+   
+    
+    
+    a_array=a.toarray()
+    b_array=b.toarray()
+    cosine_sim=(a_array.dot(b_array.transpose()))/(np.sqrt(a.multiply(a).sum(1)).dot(np.sqrt(b.multiply(b).sum(1)).transpose()))
+    return cosine_sim
     ###TODO
     pass
 
@@ -129,6 +190,44 @@ def make_predictions(movies, ratings_train, ratings_test):
       A numpy array containing one predicted rating for each element of ratings_test.
     """
     ###TODO
+   
+    predicted_ratings=[]
+    for index, testmovie in ratings_test.iterrows():
+        
+        testmoviefeature=movies[movies['movieId']==testmovie['movieId']]
+        for index,testmoviefeaturerow  in testmoviefeature.iterrows():
+            predictmoviefeature=testmoviefeaturerow['features']    
+    
+        userratedmovies=ratings_train[ratings_train['userId']==testmovie['userId']] 
+       
+  
+        ratings_list=[]
+        positive_ratings=0
+        simvalue_list=[]
+        for index,eachmovie in userratedmovies.iterrows():
+            
+            eachmoviefeature=movies[movies['movieId']==eachmovie['movieId']]
+            for index,moviefeature in eachmoviefeature.iterrows():
+                predictedmoviefeature=moviefeature['features']
+                
+                sim_value=cosine_sim(predictmoviefeature,predictedmoviefeature)
+                
+                if(sim_value > 0):
+                    positive_ratings=1
+                    ratings=ratings_train[(ratings_train['movieId']==eachmovie['movieId'])&(ratings_train['userId']==testmovie['userId'])]
+                    for index,ratings in ratings.iterrows():
+                        userrating=ratings['rating']
+                    ratings_list.append(sim_value*userrating)
+                    simvalue_list.append(sim_value)
+        if positive_ratings == 1:           
+            predicted_ratings.append(np.sum(ratings_list)/np.sum(simvalue_list) )
+        else:
+            predicted_ratings.append(np.mean(userratedmovies['rating']))
+    
+           
+    return np.array(predicted_ratings)          
+             
+    
     pass
 
 
