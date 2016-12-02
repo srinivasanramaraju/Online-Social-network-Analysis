@@ -1,0 +1,19 @@
+I have collected the followers of 4 famous tennis players: Roger Federer, Rafael Nadal, Novak Djokovic and Andrew Agassi to form a network. The idea is to see how the followers 
+of these legends are split and how many of their followers are male and female based on their tweets using a classifier. The Collect.py runs almost ~7-9 mins approx.
+to collect the followers of each player ( sample size limited to 5000 per player) and tweets of the subset of followers(250)(10 tweets per follower).The number of tweets retrieved 
+is also limited to a maximum of 1800 to avoid rate limitation and longer period of data collection. Also, collect.py creates a graph object for the cluster.py
+
+Cluster.py runs the Girvan Newman algorithm on the graph created among the players and their subset of followers(250) (to avoid clutter and dense graph). The original graph 
+created is saved to network.png. It could be noted that there are common followers among all the four players. From the community detected, it was evident that the followers connected 
+to the modern day greats - Roger Federer, Rafael Nadal and Novak Djokovic  belong to a community (cluster-0.png) and people following retired players like Andrew Agassi belong to 
+a different community(cluster-1.png). The amount of common followers between (Roger & Nadal) and (Djokovic & Nadal) show how their rivalry is closely followed. Though, the 
+community detection is run on a sample set of total followers it indicates how people fall in different communities. 
+
+Classify.py - classifies the subset of followers based on their tweets as Male or female. All the tweets retrieved are labeled as Male or Female using the US census data to create
+a training set for the classifier. A vocabulary list and tokens of tweets are used to create a feature matrix. A logistic Regression model is created using the feature 
+matrix and the label set created. The created model is trained and tested on the tweet data set retrieved. The model predicts the gender based on the tweets passed to it. 
+The accuracy of the model created is 57% 
+
+Summarize.py -The results stored in a pickle are retrieved and written to .txt file  
+
+ 
