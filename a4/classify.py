@@ -11,10 +11,10 @@ from scipy.sparse import lil_matrix
 import time
 import re
 
-consumer_key = 'JbNmHiCvktwSRFeWwvYbEgBIu'
-consumer_secret = '6WpENU31DWOZuKgZ61jmRguRezynhQubKMDhYVLeWXliiwksNS'
-access_token = '1376939035-dC2nd33K47GiCw3y8KtHZWAATrM2qgnS6fmUTEW'
-access_token_secret = 'xCW918qTRl2vnWxaecQbSdVeuPho1MoD9xsJqU1EBb6ai'
+consumer_key = ''
+consumer_secret = ''
+access_token = ''
+access_token_secret = ''
 call=0
 def get_twitter():
 
