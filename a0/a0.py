@@ -37,6 +37,7 @@ import sys
 import time
 from TwitterAPI import TwitterAPI
 
+# All the credentials has been disabled - No use of trying it!
 consumer_key = 'JbNmHiCvktwSRFeWwvYbEgBIu'
 consumer_secret = '6WpENU31DWOZuKgZ61jmRguRezynhQubKMDhYVLeWXliiwksNS'
 access_token = '1376939035-dC2nd33K47GiCw3y8KtHZWAATrM2qgnS6fmUTEW'
